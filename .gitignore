@@ -290,3 +290,7 @@ gradle-app.setting
 /.jqwik-database
 application.properties
 application.yml
+# 부하테스트 산출물 중 커밋하면 안 되는 것
+bench-out/jwt_tokens.txt
+bench-out/app.log
+bench-out/run.log

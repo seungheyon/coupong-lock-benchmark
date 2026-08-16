@@ -2,6 +2,7 @@ package coupong.nbc.coupongwowdeal.domain.common.aop
 
 import coupong.nbc.coupongwowdeal.infra.redis.LockService
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 
 @Component
 class Lock(
@@ -22,6 +23,10 @@ class Lock(
         fun <T> spin(key: String, timeout: Long, function: () -> T): T? {
             return advice.spin(key, timeout, function)
         }
+
+        fun <T> rLock(key: String, tryTime: Long, timeUnit: TimeUnit, function: () -> T): T? {
+            return advice.rLock(key, tryTime, timeUnit, function)
+        }
     }
 
     @Component
@@ -37,6 +42,14 @@ class Lock(
                 lockService.spinUntilLockAcquired(key, timeout, function)
             } finally {
                 lockService.unlock(key)
+            }
+        }
+
+        fun <T> rLock(key: String, tryTime: Long, timeUnit: TimeUnit, function: () -> T): T? {
+            return try {
+                lockService.tryLock(key, tryTime, timeUnit, function)
+            } finally {
+                lockService.rUnlock(key)
             }
         }
     }

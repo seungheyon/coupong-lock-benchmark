@@ -44,8 +44,13 @@ dependencies {
     //redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.github.codemonstur:embedded-redis:1.4.3")
+    // 부하테스트용: Lettuce 경로와 Redisson 경로를 한 브랜치에서 함께 쓰기 위해 추가.
+    // dev-redisson 브랜치는 redisson-spring-boot-starter 로 LockService 자체를 교체했으나,
+    // 여기서는 Lettuce 스핀락을 살려둬야 하므로 starter 대신 플레인 라이브러리를 쓰고 빈을 직접 만든다.
+    implementation("org.redisson:redisson:3.50.0")
 
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
 

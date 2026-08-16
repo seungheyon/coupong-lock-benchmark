@@ -12,4 +12,12 @@ interface TimeDealService {
     fun updateTimeDeal(timeDealId: Long, timeDealUpdate: UpdateTimeDealRequest): TimeDealResponse
     fun deleteTimeDeal(timeDealId: Long)
     fun issueCoupon(userPrincipal: UserPrincipal, timeDealId: Long): TimeDealCouponResponse
+
+    /** 부하테스트 전용. 락 방식과 트랜잭션 경계를 요청마다 지정한다. */
+    fun issueCouponBench(
+        userPrincipal: UserPrincipal,
+        timeDealId: Long,
+        lockMode: String,
+        txWrapped: Boolean
+    ): TimeDealCouponResponse
 }

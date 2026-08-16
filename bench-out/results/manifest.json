@@ -1,0 +1,54 @@
+{
+  "measured_at": "2026-08-16T21:28:54.289272+00:00",
+  "purpose": "Coupong 동시성 제어 3안 재측정. 2024년 측정치의 검증이 아니라 현재 조건의 독립 측정.",
+  "app": {
+    "repo_branch": "bench/lock-comparison",
+    "base_commit": "acc24c6 (dev-mysql-lock-pessimistic)",
+    "spring_boot": "3.3.1",
+    "kotlin": "1.9.24",
+    "jvm_build": "JDK 17 (gradle toolchain)"
+  },
+  "infra": {
+    "db": "MySQL 8.0.46 (docker, host port 3307)",
+    "redis": "Redis 7.4.10 (docker, host port 6380)",
+    "note": "원본 프로젝트는 H2 인메모리 + embedded Redis 구성이었다. 이번 측정은 실제 MySQL/Redis 이므로 조건이 다르다."
+  },
+  "fixture": {
+    "users": 3000,
+    "coupon_total_quantity": 1000,
+    "source": "저장소 DataInitializer(#49, 2024-07-10)에 남아 있던 값"
+  },
+  "load": {
+    "request_counts": [
+      500,
+      1000,
+      3000
+    ],
+    "concurrency": "요청 수와 동일(ThreadPoolExecutor max_workers=n)",
+    "ramp_up": "없음(전량 동시 제출)",
+    "warmup": "pessimistic/inner/500 1회, 집계 제외"
+  },
+  "matrix": {
+    "lock": [
+      "pessimistic",
+      "spin",
+      "redisson"
+    ],
+    "tx": [
+      "inner",
+      "wrapped"
+    ]
+  },
+  "host": {
+    "platform": "Windows-10-10.0.22631-SP0",
+    "python": "3.10.0"
+  },
+  "caveats": [
+    "예열 조건을 통제했으나 2024년 측정에는 예열 기록이 없어 비교 불가.",
+    "단일 인스턴스 측정이다. JVM 락이 무효가 되는 다중 인스턴스 조건은 재현하지 않았다.",
+    "spin 은 15~30ms 랜덤 백오프를 도는 원본 구현 그대로다.",
+    "요청의 1~2%가 클라이언트 쪽 Windows 소켓 오류(WinError 10014)로 유실됐다. 서버 동작이 아니라 부하 드라이버가 수천 개 소켓을 동시에 여는 데서 온 것이다. 집계는 성공 응답만 사용했다.",
+    "n=3000 에서 HTTP 400('Coupon has no quantity')은 재고 1,000개가 소진된 정상 응답이다.",
+    "issued_vs_stock_mismatch 는 발급 행 수와 재고 차감량의 차이다. 0이 아니면 재고가 실제 발급보다 덜 깎였다는 뜻이고, 그것이 곧 lost update 다."
+  ]
+}
