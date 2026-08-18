@@ -294,3 +294,6 @@ application.yml
 bench-out/jwt_tokens.txt
 bench-out/app.log
 bench-out/run.log
+bench-out/*.log
+bench-out/*.bak
+bench-out/ignore.txt
