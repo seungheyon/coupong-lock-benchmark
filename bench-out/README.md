@@ -1,3 +1,6 @@
+> 이 저장소의 애플리케이션 코드는 팀 프로젝트([coupong-wowdeal/coupong-wowdeal](https://github.com/coupong-wowdeal/coupong-wowdeal))에서 온 것이고,
+> 개인 작업은 `bench-out/` 과 `BoundaryLeakTest` 다. 전체 요약은 [루트 README](../README.md) 참고.
+
 # Coupong 락 3안 부하테스트 재측정
 
 2024-07 Coupong 프로젝트의 동시성 제어 3안을 현재 조건에서 다시 측정한 기록.
